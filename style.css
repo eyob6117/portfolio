@@ -183,7 +183,7 @@ span{
 }
 .about .content .cols{
     position: relative;
-    width:100%;
+    width:40%;
     height: 100%;
     padding:20px 70px 20px 20px;
     
@@ -211,8 +211,8 @@ span{
 .about .content .cols .box{
     position: relative;
     height: 550px;
-    box-shadow: 0 10px 10px rgba(0, 0,0,0.5);
-
+    box-shadow: 0 0px 10px 0 rgba(243, 219, 219, 0.9);
+    border-radius: 10px;
 }
 .about .content .cols .box img{
     position:absolute;
@@ -220,6 +220,7 @@ span{
     width:110%;
     height: 100%;
     object-fit: cover;
+    border-radius: 10px;
    
 }
 .workout .content{
@@ -302,6 +303,7 @@ span{
     align-items: center;
     margin: 8px 0;
 }
+
 .trainers .content .frame .headline a{
     height: 22px;
     width:22px;
@@ -318,6 +320,15 @@ span{
     background: var(--prime);
 
 }
+.trainers .content .frame .headline .icons a{
+   position: relative;
+   top:0;
+   border: none;
+   width: 2px;
+   padding:5px;
+   font-size: 15px;
+}
+
 .trainers .content .frame .headline .title{
     color:var(--prime);
     font-size: 1.2em;

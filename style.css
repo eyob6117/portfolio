@@ -193,18 +193,36 @@ span{
     margin-right:2px;
 
 }
-.about .content .cols a{
+
+.about .content .cols .linkdin{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30;
     position:relative;
     top:20px;
-    color:#fff;
-    background: var(--prime);
+    /* background: var(--prime); */
     padding:5px 20px;
     border-radius: 5px;
     text-decoration: none;
     text-transform: capitalize;
+} 
+
+.about .content .cols .linkdin .join {
+    background-color: #00ff34;
+    border-radius: 5px;
+    padding: 10px;
+    padding-left: 30px;
+  
+    
+    
 }
+.about .content .cols .linkdin .join a {
+    text-decoration: none;
+    color:#000
+}
+
 .about .content .cols a:hover{
-    background: #fff;
+
     color:#000;
 
 }
@@ -542,7 +560,7 @@ span{
     }
     .highlights .join{
         font-size: 1.8em;
-        border:1px solid var(--prime);
+        /* border:1px solid var(--prime); */
     }
     .main h2{
         font-size: 1.5rem;

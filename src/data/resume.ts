@@ -51,11 +51,6 @@ export const skillGroups = [
   },
 ];
 
-// Short labels that orbit the 3D core in the hero.
-export const orbitSkills = [
-  'Swift', 'React Native', 'TypeScript', 'UIKit', 'Next.js', 'Django', 'AWS', 'Expo', 'Node.js', 'React',
-];
-
 export const experience = [
   {
     role: 'Senior Mobile Engineer (React Native)',

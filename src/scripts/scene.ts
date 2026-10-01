@@ -35,7 +35,7 @@ export interface SceneHandle {
   dispose(): void;
 }
 
-export function initScene(canvas: HTMLCanvasElement, labelEls: HTMLElement[]): SceneHandle | null {
+export function initScene(canvas: HTMLCanvasElement): SceneHandle | null {
   let renderer: THREE.WebGLRenderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
@@ -47,7 +47,9 @@ export function initScene(canvas: HTMLCanvasElement, labelEls: HTMLElement[]): S
   const isSmall = () => window.innerWidth < 768;
   const motion = reduceMotion ? 0.25 : 1;
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+  // Phones get a lighter scene: lower resolution, fewer particles and a coarser orb mesh.
+  const lite = isSmall();
+  renderer.setPixelRatio(lite ? 1 : Math.min(window.devicePixelRatio, 1.75));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -99,7 +101,7 @@ export function initScene(canvas: HTMLCanvasElement, labelEls: HTMLElement[]): S
         gl_FragColor = vec4(col, 1.0);
       }`,
   });
-  const core = new THREE.Mesh(new THREE.IcosahedronGeometry(1.35, isSmall() ? 48 : 96), coreMat);
+  const core = new THREE.Mesh(new THREE.IcosahedronGeometry(1.35, lite ? 32 : 96), coreMat);
 
   const shell = new THREE.Mesh(
     new THREE.IcosahedronGeometry(1.95, 2),
@@ -132,7 +134,7 @@ export function initScene(canvas: HTMLCanvasElement, labelEls: HTMLElement[]): S
   scene.add(coreGroup);
 
   // ---------- Galaxy particle field ----------
-  const COUNT = isSmall() ? 4000 : 9000;
+  const COUNT = lite ? 2500 : 7000;
   const pos = new Float32Array(COUNT * 3);
   const col = new Float32Array(COUNT * 3);
   const size = new Float32Array(COUNT);
@@ -274,12 +276,6 @@ export function initScene(canvas: HTMLCanvasElement, labelEls: HTMLElement[]): S
   window.addEventListener('resize', onResize);
 
   const showcase = document.getElementById('showcase');
-  const labelAnchors = labelEls.map((_, i) => {
-    const phi = Math.acos(1 - (2 * (i + 0.5)) / labelEls.length);
-    const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-    return new THREE.Vector3(Math.sin(phi) * Math.cos(theta), Math.cos(phi), Math.sin(phi) * Math.sin(theta)).multiplyScalar(2.9);
-  });
-  const tmp = new THREE.Vector3();
 
   const timer = new THREE.Timer();
   timer.connect(document);
@@ -362,21 +358,6 @@ export function initScene(canvas: HTMLCanvasElement, labelEls: HTMLElement[]): S
 
     composer.render();
 
-    // Project HTML skill labels onto the orbiting sphere around the core
-    const fade = Math.max(0, 1 - heroP * 2.2);
-    labelEls.forEach((el, i) => {
-      tmp.copy(labelAnchors[i]).applyAxisAngle(new THREE.Vector3(0, 1, 0), t * 0.18);
-      tmp.applyAxisAngle(new THREE.Vector3(1, 0, 0), 0.25);
-      const depth = tmp.z; // -2.9 .. 2.9
-      tmp.multiplyScalar(coreGroup.scale.x).add(coreGroup.position);
-      tmp.project(camera);
-      const x = (tmp.x * 0.5 + 0.5) * window.innerWidth;
-      const y = (-tmp.y * 0.5 + 0.5) * vh;
-      const front = (depth + 2.9) / 5.8;
-      el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) scale(${0.7 + front * 0.45})`;
-      el.style.opacity = String(fade * (0.25 + front * 0.75));
-      el.style.zIndex = front > 0.5 ? '2' : '0';
-    });
 
     raf = requestAnimationFrame(tick);
   };

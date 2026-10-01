@@ -21,6 +21,20 @@ export const stats = [
   { value: 3, suffix: '', label: 'Certifications' },
 ];
 
+// Tech stack chips that orbit the planet in the hero; color is the chip's accent dot.
+export const orbitStack = [
+  { name: 'Swift', color: '#ff7a3d' },
+  { name: 'React Native', color: '#61dafb' },
+  { name: 'TypeScript', color: '#3d8bff' },
+  { name: 'Next.js', color: '#ffffff' },
+  { name: 'UIKit', color: '#4fa3ff' },
+  { name: 'React', color: '#61dafb' },
+  { name: 'Node.js', color: '#5fd068' },
+  { name: 'Django', color: '#2fbf8f' },
+  { name: 'AWS', color: '#ffb547' },
+  { name: 'Expo', color: '#b8a8ff' },
+];
+
 // Kinds of mobile apps built, shown in the About section.
 export const useCases = [
   'Mobile banking',

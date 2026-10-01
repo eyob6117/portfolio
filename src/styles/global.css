@@ -571,6 +571,17 @@ main {
   font-size: 14px;
 }
 
+.use-cases {
+  margin-top: 28px;
+}
+.use-cases-title {
+  margin: 0 0 12px;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 /* ---------- Showcase ---------- */
 .showcase {
   min-height: 160vh;

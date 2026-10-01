@@ -4,6 +4,7 @@ import {
   profile,
   stats,
   skillGroups,
+  useCases,
   orbitSkills,
   experience,
   projects,
@@ -85,6 +86,12 @@ const year = new Date().getFullYear();
             <li><span>Education</span>{education.degree}, {education.school}</li>
             <li><span>Languages</span>{languages.join(' · ')}</li>
           </ul>
+          <div class="use-cases" data-reveal>
+            <p class="use-cases-title">Mobile apps built for</p>
+            <ul class="chips">
+              {useCases.map((u) => <li>{u}</li>)}
+            </ul>
+          </div>
         </div>
         <div class="stats">
           {

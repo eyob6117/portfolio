@@ -1,0 +1,288 @@
+---
+import Base from '../layouts/Base.astro';
+import {
+  profile,
+  stats,
+  skillGroups,
+  orbitSkills,
+  experience,
+  projects,
+  certifications,
+  education,
+  languages,
+} from '../data/resume';
+
+const nav = [
+  ['about', 'About'],
+  ['skills', 'Skills'],
+  ['experience', 'Experience'],
+  ['work', 'Work'],
+  ['contact', 'Contact'],
+];
+const year = new Date().getFullYear();
+---
+
+<Base>
+  <canvas id="webgl" aria-hidden="true"></canvas>
+  <div class="bg-fallback" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+
+  <div class="loader" aria-hidden="true">
+    <div class="loader-mark">ET</div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+
+  <div class="orbit-labels" aria-hidden="true">
+    {orbitSkills.map((s) => <span class="orbit-label">{s}</span>)}
+  </div>
+
+  <header class="nav">
+    <a href="#top" class="brand" aria-label="Back to top">
+      <span class="brand-mark">ET</span>
+      <span class="brand-name">{profile.name}</span>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      {nav.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+    </nav>
+    <a class="btn btn-small" href={`mailto:${profile.email}`} data-magnetic>Let's talk</a>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-inner">
+        <p class="eyebrow" data-reveal><span class="pulse"></span> Available for senior mobile roles</p>
+        <h1 class="hero-title">
+          <span class="line"><span data-scramble>{profile.firstName}</span></span>
+          <span class="line outline"><span data-scramble>{profile.lastName}</span></span>
+        </h1>
+        <p class="hero-sub" data-reveal>
+          <strong>{profile.title}</strong> crafting fast, secure apps in{' '}
+          <span class="grad">{profile.focus}</span> for millions of users.
+        </p>
+        <div class="hero-cta" data-reveal>
+          <a class="btn" href="#work" data-magnetic>See my work</a>
+          <a class="btn btn-ghost" href={profile.linkedin} target="_blank" rel="noopener" data-magnetic>LinkedIn ↗</a>
+        </div>
+      </div>
+      <div class="scroll-hint" aria-hidden="true"><span></span>Scroll</div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section">
+      <div class="container about">
+        <div class="section-head" data-reveal>
+          <span class="kicker">01 · About</span>
+          <h2>Mobile first.<br /><span class="grad">Production grade.</span></h2>
+        </div>
+        <div class="about-body">
+          <p class="lead" data-reveal>{profile.summary}</p>
+          <ul class="meta" data-reveal>
+            <li><span>Based in</span>{profile.location}</li>
+            <li><span>Education</span>{education.degree}, {education.school}</li>
+            <li><span>Languages</span>{languages.join(' · ')}</li>
+          </ul>
+        </div>
+        <div class="stats">
+          {
+            stats.map((s, i) => (
+              <div class="stat glass" data-reveal style={`--d:${i * 90}ms`} data-tilt="12">
+                <div class="stat-num">
+                  <span data-count={s.value}>0</span>
+                  {s.suffix}
+                </div>
+                <div class="stat-label">{s.label}</div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- 3D PHONE SHOWCASE -->
+    <section id="showcase" class="section showcase">
+      <div class="container showcase-grid">
+        <div class="showcase-spacer" aria-hidden="true"></div>
+        <div class="showcase-copy">
+          <span class="kicker" data-reveal>02 · Craft</span>
+          <h2 data-reveal>Banking-grade apps,<br /><span class="grad">pocket sized.</span></h2>
+          <p data-reveal>
+            From the M-Pesa Super App ecosystem to a ground-up mobile banking super app, I own the whole journey:
+            architecture, native performance, encrypted storage, and the App Store pipeline from provisioning to
+            TestFlight to release.
+          </p>
+          <ul class="checks" data-reveal>
+            <li>Swift &amp; UIKit for native iOS experiences</li>
+            <li>React Native with Swift modules where speed matters</li>
+            <li>Encrypted storage with MMKV and Keychain</li>
+            <li>Provisioning, TestFlight and App Review compliance</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="section">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="kicker">03 · Toolkit</span>
+          <h2>The stack I <span class="grad">ship with.</span></h2>
+        </div>
+        <div class="skills-grid">
+          {
+            skillGroups.map((g, i) => (
+              <article class="skill-card glass" data-reveal data-tilt="10" style={`--d:${i * 70}ms`}>
+                <div class="skill-icon" aria-hidden="true">{g.icon}</div>
+                <h3>{g.name}</h3>
+                <ul class="chips">
+                  {g.items.map((it) => (
+                    <li>{it}</li>
+                  ))}
+                </ul>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience" class="section">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="kicker">04 · Journey</span>
+          <h2>Where I've <span class="grad">made an impact.</span></h2>
+        </div>
+        <ol class="timeline">
+          {
+            experience.map((job) => (
+              <li class="job" data-reveal>
+                <span class="job-dot" aria-hidden="true" />
+                <div class="job-card glass" data-tilt="4">
+                  <div class="job-top">
+                    <div>
+                      <h3>{job.role}</h3>
+                      <p class="job-company">
+                        {job.company} <span>· {job.place}</span>
+                      </p>
+                    </div>
+                    <span class="job-period">{job.period}</span>
+                  </div>
+                  <ul class="job-points">
+                    {job.points.map((p) => (
+                      <li>{p}</li>
+                    ))}
+                  </ul>
+                  <ul class="chips small">
+                    {job.tags.map((t) => (
+                      <li>{t}</li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="work" class="section">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="kicker">05 · Selected work</span>
+          <h2>Things I've <span class="grad">built.</span></h2>
+        </div>
+        <div class="projects">
+          {
+            projects.map((p, i) => (
+              <article class="project glass" data-reveal data-tilt="14" style={`--accent:${p.accent};--d:${i * 90}ms`}>
+                <div class="project-glow" aria-hidden="true" />
+                <span class="project-index">0{i + 1}</span>
+                <h3>{p.name}</h3>
+                <p>{p.blurb}</p>
+                <ul class="chips small">
+                  {p.tags.map((t) => (
+                    <li>{t}</li>
+                  ))}
+                </ul>
+              </article>
+            ))
+          }
+        </div>
+
+        <div class="creds">
+          <div class="creds-col" data-reveal>
+            <h3 class="creds-title">Certifications</h3>
+            {
+              certifications.map((c) => (
+                <div class="cert glass">
+                  <span class="cert-badge" aria-hidden="true">✦</span>
+                  <div>
+                    <strong>{c.name}</strong>
+                    <span>{c.issuer}</span>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+          <div class="creds-col" data-reveal>
+            <h3 class="creds-title">Education</h3>
+            <div class="cert glass">
+              <span class="cert-badge" aria-hidden="true">🎓</span>
+              <div>
+                <strong>{education.degree}</strong>
+                <span>{education.school} · {education.period}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section contact">
+      <div class="container contact-inner" data-reveal>
+        <span class="kicker">06 · Contact</span>
+        <h2 class="contact-title">Let's build something<br /><span class="grad">people love to use.</span></h2>
+        <a class="mega-link" href={`mailto:${profile.email}`} data-magnetic>{profile.email}</a>
+        <div class="socials">
+          <a href={profile.linkedin} target="_blank" rel="noopener" data-magnetic>LinkedIn ↗</a>
+          <a href={profile.github} target="_blank" rel="noopener" data-magnetic>GitHub ↗</a>
+          <a href={`mailto:${profile.email}`} data-magnetic>Email ↗</a>
+        </div>
+      </div>
+      <footer class="footer">
+        <span>© {year} {profile.name}</span>
+        <span>Built with Astro &amp; Three.js</span>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    import { initUI } from '../scripts/ui';
+
+    const loader = document.querySelector<HTMLElement>('.loader');
+    const canvas = document.getElementById('webgl') as HTMLCanvasElement;
+    const labels = Array.from(document.querySelectorAll<HTMLElement>('.orbit-label'));
+
+    initUI();
+
+    // Load the 3D scene as its own chunk so text is interactive immediately.
+    import('../scripts/scene')
+      .then(({ initScene }) => {
+        const handle = initScene(canvas, labels);
+        if (!handle) document.documentElement.classList.add('no-webgl');
+      })
+      .catch(() => document.documentElement.classList.add('no-webgl'))
+      .finally(() => {
+        requestAnimationFrame(() => {
+          document.documentElement.classList.add('ready');
+          setTimeout(() => loader?.remove(), 1200);
+        });
+      });
+  </script>
+</Base>

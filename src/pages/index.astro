@@ -4,6 +4,7 @@ import {
   profile,
   stats,
   skillGroups,
+  orbitStack,
   useCases,
   experience,
   projects,
@@ -26,6 +27,17 @@ const year = new Date().getFullYear();
   <canvas id="webgl" aria-hidden="true"></canvas>
   <div class="bg-fallback" aria-hidden="true"></div>
   <div class="progress" aria-hidden="true"></div>
+
+  <div class="stack-orbit" aria-hidden="true">
+    {
+      orbitStack.map((t) => (
+        <span class="stack-chip" style={`--c:${t.color}`}>
+          <i />
+          {t.name}
+        </span>
+      ))
+    }
+  </div>
 
   <div class="loader" aria-hidden="true">
     <div class="loader-mark">ET</div>
@@ -266,13 +278,14 @@ const year = new Date().getFullYear();
 
     const loader = document.querySelector<HTMLElement>('.loader');
     const canvas = document.getElementById('webgl') as HTMLCanvasElement;
+    const chips = Array.from(document.querySelectorAll<HTMLElement>('.stack-chip'));
 
     initUI();
 
     // Load the 3D scene as its own chunk so text is interactive immediately.
     import('../scripts/scene')
       .then(({ initScene }) => {
-        const handle = initScene(canvas);
+        const handle = initScene(canvas, chips);
         if (!handle) document.documentElement.classList.add('no-webgl');
       })
       .catch(() => document.documentElement.classList.add('no-webgl'))

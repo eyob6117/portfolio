@@ -35,7 +35,7 @@ export interface SceneHandle {
   dispose(): void;
 }
 
-export function initScene(canvas: HTMLCanvasElement): SceneHandle | null {
+export function initScene(canvas: HTMLCanvasElement, chips: HTMLElement[] = []): SceneHandle | null {
   let renderer: THREE.WebGLRenderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
@@ -263,6 +263,7 @@ export function initScene(canvas: HTMLCanvasElement): SceneHandle | null {
     scrollY = window.scrollY;
   };
   const onResize = () => {
+    placeChips();
     const w = window.innerWidth;
     const h = window.innerHeight;
     camera.aspect = w / h;
@@ -276,6 +277,26 @@ export function initScene(canvas: HTMLCanvasElement): SceneHandle | null {
   window.addEventListener('resize', onResize);
 
   const showcase = document.getElementById('showcase');
+
+  // Stack chips sit on a Fibonacci sphere around the planet; phones show only the first six.
+  const chipCount = () => (isSmall() ? Math.min(6, chips.length) : chips.length);
+  const chipAnchors = chips.map(() => new THREE.Vector3());
+  const chipHalfW = chips.map(() => 0);
+  const placeChips = () => {
+    chips.forEach((el, i) => (chipHalfW[i] = el.offsetWidth / 2));
+    const n = chipCount();
+    for (let i = 0; i < n; i++) {
+      const phi = Math.acos(1 - (2 * (i + 0.5)) / n);
+      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+      chipAnchors[i]
+        .set(Math.sin(phi) * Math.cos(theta), Math.cos(phi) * 0.62, Math.sin(phi) * Math.sin(theta))
+        .multiplyScalar(3);
+    }
+  };
+  placeChips();
+  const chipPos = new THREE.Vector3();
+  const yAxis = new THREE.Vector3(0, 1, 0);
+  const xAxis = new THREE.Vector3(1, 0, 0);
 
   const timer = new THREE.Timer();
   timer.connect(document);
@@ -303,7 +324,7 @@ export function initScene(canvas: HTMLCanvasElement): SceneHandle | null {
     const hp = THREE.MathUtils.smoothstep(heroP, 0, 1);
     const camY = -docP * 2.2;
     coreGroup.position.set(
-      THREE.MathUtils.lerp(small ? 0.2 : 2.6, small ? 1.6 : 5.6, hp),
+      THREE.MathUtils.lerp(small ? 0.2 : 2.35, small ? 1.6 : 5.6, hp),
       camY + THREE.MathUtils.lerp(small ? 1.55 : 0.1, small ? 2.9 : 2.7, hp),
       THREE.MathUtils.lerp(0, -4, hp),
     );
@@ -357,6 +378,27 @@ export function initScene(canvas: HTMLCanvasElement): SceneHandle | null {
     }
 
     composer.render();
+
+    // Project the stack chips; front chips are full size and opaque, back ones recede.
+    const chipFade = Math.max(0, 1 - heroP * 2.2);
+    const n = chipCount();
+    for (let i = 0; i < n; i++) {
+      const el = chips[i];
+      if (chipFade === 0) {
+        el.style.opacity = '0';
+        continue;
+      }
+      chipPos.copy(chipAnchors[i]).applyAxisAngle(yAxis, t * 0.16).applyAxisAngle(xAxis, 0.22);
+      const front = THREE.MathUtils.clamp((chipPos.z / 3 + 1) / 2, 0, 1); // 0 back .. 1 front
+      chipPos.multiplyScalar(coreGroup.scale.x).add(coreGroup.position).project(camera);
+      // Keep every chip fully on screen.
+      const half = chipHalfW[i] + 10;
+      const x = THREE.MathUtils.clamp((chipPos.x * 0.5 + 0.5) * window.innerWidth, half, window.innerWidth - half);
+      const y = THREE.MathUtils.clamp((-chipPos.y * 0.5 + 0.5) * vh, 96, vh - 24);
+      el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${(0.78 + front * 0.22).toFixed(3)})`;
+      el.style.opacity = (chipFade * (0.55 + front * 0.45)).toFixed(3);
+      el.style.zIndex = front > 0.5 ? '2' : '1';
+    }
 
 
     raf = requestAnimationFrame(tick);

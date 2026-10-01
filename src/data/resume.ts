@@ -11,12 +11,12 @@ export const profile = {
   linkedin: 'https://www.linkedin.com/in/eyob-teklu',
   github: 'https://github.com/eyob6117',
   summary:
-    'I build high-performance, secure mobile apps with Swift and React Native, and have delivered 30+ enterprise-level applications, including mobile apps for many different use cases. I lead iOS delivery inside the M-Pesa Super App ecosystem serving millions of customers, and I architected a mobile banking super app end to end. A full-stack web background (React, Next.js, TypeScript, Django) means I ship production-grade products from API to App Store.',
+    'I build high-performance, secure web and mobile apps with React, Next.js, Swift and React Native, and have delivered 30+ enterprise-level applications, most of them web apps alongside mobile apps for many different use cases. I lead iOS delivery inside the M-Pesa Super App ecosystem serving millions of customers, and I architected a mobile banking super app end to end. Working across the full stack (React, Next.js, TypeScript, Django, Node.js), I ship production-grade products from API to browser to App Store.',
 };
 
 export const stats = [
   { value: 5, suffix: '+', label: 'Years building software' },
-  { value: 30, suffix: '+', label: 'Enterprise apps built' },
+  { value: 30, suffix: '+', label: 'Enterprise web & mobile apps' },
   { value: 1, suffix: 'M+', label: 'Customers reached' },
   { value: 3, suffix: '', label: 'Certifications' },
 ];
@@ -27,7 +27,8 @@ export const useCases = [
   'Mobile money & wallets',
   'Super app mini-apps',
   'Lottery & gaming',
-  'Customer support & CRM',
+  'Customer support portals & CRM',
+  'Incident management',
   'Travel & tours',
   'On-demand services',
   'Fitness tracking',

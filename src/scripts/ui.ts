@@ -1,5 +1,5 @@
-// DOM interactions layered over the WebGL scene: reveals, tilt cards, magnetic buttons,
-// cursor glow, counters, name scramble and scroll progress.
+// DOM interactions layered over the WebGL scene: reveals, project-card tilt, counters,
+// active nav and scroll progress.
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(pointer: fine)').matches;
@@ -9,12 +9,7 @@ export function initUI() {
   counters();
   scrollProgress();
   activeNav();
-  if (!reduceMotion) scramble();
-  if (finePointer && !reduceMotion) {
-    tiltCards();
-    magnetic();
-    cursor();
-  }
+  if (finePointer && !reduceMotion) tiltCards();
 }
 
 function revealOnScroll() {
@@ -86,23 +81,6 @@ function activeNav() {
   });
 }
 
-function scramble() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ<>/{}#*';
-  document.querySelectorAll<HTMLElement>('[data-scramble]').forEach((el, idx) => {
-    const final = el.textContent ?? '';
-    let frame = 0;
-    const total = 28 + idx * 8;
-    const run = () => {
-      el.textContent = final
-        .split('')
-        .map((ch, i) => (i < (frame / total) * final.length ? ch : chars[Math.floor(Math.random() * chars.length)]))
-        .join('');
-      if (++frame <= total) requestAnimationFrame(run);
-      else el.textContent = final;
-    };
-    setTimeout(run, 350 + idx * 150);
-  });
-}
 
 function tiltCards() {
   document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((card) => {
@@ -123,45 +101,4 @@ function tiltCards() {
   });
 }
 
-function magnetic() {
-  document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
-    el.addEventListener('pointermove', (e) => {
-      const r = el.getBoundingClientRect();
-      const x = e.clientX - r.left - r.width / 2;
-      const y = e.clientY - r.top - r.height / 2;
-      el.style.transform = `translate(${x * 0.25}px, ${y * 0.35}px)`;
-    });
-    el.addEventListener('pointerleave', () => (el.style.transform = ''));
-  });
-}
 
-function cursor() {
-  const dot = document.querySelector<HTMLElement>('.cursor-dot');
-  const ring = document.querySelector<HTMLElement>('.cursor-ring');
-  if (!dot || !ring) return;
-  document.documentElement.classList.add('has-cursor');
-  let x = innerWidth / 2;
-  let y = innerHeight / 2;
-  let rx = x;
-  let ry = y;
-  window.addEventListener(
-    'pointermove',
-    (e) => {
-      x = e.clientX;
-      y = e.clientY;
-      dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    },
-    { passive: true },
-  );
-  const loop = () => {
-    rx += (x - rx) * 0.18;
-    ry += (y - ry) * 0.18;
-    ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
-    requestAnimationFrame(loop);
-  };
-  loop();
-  document.querySelectorAll('a, button, [data-tilt]').forEach((el) => {
-    el.addEventListener('pointerenter', () => ring.classList.add('hover'));
-    el.addEventListener('pointerleave', () => ring.classList.remove('hover'));
-  });
-}

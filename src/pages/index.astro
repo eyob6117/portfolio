@@ -5,7 +5,6 @@ import {
   stats,
   skillGroups,
   useCases,
-  orbitSkills,
   experience,
   projects,
   certifications,
@@ -26,18 +25,11 @@ const year = new Date().getFullYear();
 <Base>
   <canvas id="webgl" aria-hidden="true"></canvas>
   <div class="bg-fallback" aria-hidden="true"></div>
-  <div class="grain" aria-hidden="true"></div>
   <div class="progress" aria-hidden="true"></div>
-  <div class="cursor-dot" aria-hidden="true"></div>
-  <div class="cursor-ring" aria-hidden="true"></div>
 
   <div class="loader" aria-hidden="true">
     <div class="loader-mark">ET</div>
     <div class="loader-bar"><span></span></div>
-  </div>
-
-  <div class="orbit-labels" aria-hidden="true">
-    {orbitSkills.map((s) => <span class="orbit-label">{s}</span>)}
   </div>
 
   <header class="nav">
@@ -48,7 +40,7 @@ const year = new Date().getFullYear();
     <nav class="nav-links" aria-label="Sections">
       {nav.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
     </nav>
-    <a class="btn btn-small" href={`mailto:${profile.email}`} data-magnetic>Let's talk</a>
+    <a class="btn btn-small" href={`mailto:${profile.email}`}>Let's talk</a>
   </header>
 
   <main id="top">
@@ -57,16 +49,16 @@ const year = new Date().getFullYear();
       <div class="hero-inner">
         <p class="eyebrow" data-reveal><span class="pulse"></span> Available for senior mobile roles</p>
         <h1 class="hero-title">
-          <span class="line"><span data-scramble>{profile.firstName}</span></span>
-          <span class="line outline"><span data-scramble>{profile.lastName}</span></span>
+          <span class="line"><span>{profile.firstName}</span></span>
+          <span class="line outline"><span>{profile.lastName}</span></span>
         </h1>
         <p class="hero-sub" data-reveal>
           <strong>{profile.title}</strong> crafting fast, secure web and mobile apps with{' '}
           <span class="grad">React, Next.js, Swift &amp; React Native</span> for millions of users.
         </p>
         <div class="hero-cta" data-reveal>
-          <a class="btn" href="#work" data-magnetic>See my work</a>
-          <a class="btn btn-ghost" href={profile.linkedin} target="_blank" rel="noopener" data-magnetic>LinkedIn ↗</a>
+          <a class="btn" href="#work">See my work</a>
+          <a class="btn btn-ghost" href={profile.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
         </div>
       </div>
       <div class="scroll-hint" aria-hidden="true"><span></span>Scroll</div>
@@ -96,7 +88,7 @@ const year = new Date().getFullYear();
         <div class="stats">
           {
             stats.map((s, i) => (
-              <div class="stat glass" data-reveal style={`--d:${i * 90}ms`} data-tilt="12">
+              <div class="stat glass" data-reveal style={`--d:${i * 90}ms`}>
                 <div class="stat-num">
                   <span data-count={s.value}>0</span>
                   {s.suffix}
@@ -141,7 +133,7 @@ const year = new Date().getFullYear();
         <div class="skills-grid">
           {
             skillGroups.map((g, i) => (
-              <article class="skill-card glass" data-reveal data-tilt="10" style={`--d:${i * 70}ms`}>
+              <article class="skill-card glass" data-reveal style={`--d:${i * 70}ms`}>
                 <div class="skill-icon" aria-hidden="true">{g.icon}</div>
                 <h3>{g.name}</h3>
                 <ul class="chips">
@@ -168,7 +160,7 @@ const year = new Date().getFullYear();
             experience.map((job) => (
               <li class="job" data-reveal>
                 <span class="job-dot" aria-hidden="true" />
-                <div class="job-card glass" data-tilt="4">
+                <div class="job-card glass">
                   <div class="job-top">
                     <div>
                       <h3>{job.role}</h3>
@@ -206,7 +198,7 @@ const year = new Date().getFullYear();
         <div class="projects">
           {
             projects.map((p, i) => (
-              <article class="project glass" data-reveal data-tilt="14" style={`--accent:${p.accent};--d:${i * 90}ms`}>
+              <article class="project glass" data-reveal data-tilt="6" style={`--accent:${p.accent};--d:${i * 90}ms`}>
                 <div class="project-glow" aria-hidden="true" />
                 <span class="project-index">0{i + 1}</span>
                 <h3>{p.name}</h3>
@@ -255,11 +247,11 @@ const year = new Date().getFullYear();
       <div class="container contact-inner" data-reveal>
         <span class="kicker">06 · Contact</span>
         <h2 class="contact-title">Let's build something<br /><span class="grad">people love to use.</span></h2>
-        <a class="mega-link" href={`mailto:${profile.email}`} data-magnetic>{profile.email}</a>
+        <a class="mega-link" href={`mailto:${profile.email}`}>{profile.email}</a>
         <div class="socials">
-          <a href={profile.linkedin} target="_blank" rel="noopener" data-magnetic>LinkedIn ↗</a>
-          <a href={profile.github} target="_blank" rel="noopener" data-magnetic>GitHub ↗</a>
-          <a href={`mailto:${profile.email}`} data-magnetic>Email ↗</a>
+          <a href={profile.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a href={profile.github} target="_blank" rel="noopener">GitHub ↗</a>
+          <a href={`mailto:${profile.email}`}>Email ↗</a>
         </div>
       </div>
       <footer class="footer">
@@ -274,14 +266,13 @@ const year = new Date().getFullYear();
 
     const loader = document.querySelector<HTMLElement>('.loader');
     const canvas = document.getElementById('webgl') as HTMLCanvasElement;
-    const labels = Array.from(document.querySelectorAll<HTMLElement>('.orbit-label'));
 
     initUI();
 
     // Load the 3D scene as its own chunk so text is interactive immediately.
     import('../scripts/scene')
       .then(({ initScene }) => {
-        const handle = initScene(canvas, labels);
+        const handle = initScene(canvas);
         if (!handle) document.documentElement.classList.add('no-webgl');
       })
       .catch(() => document.documentElement.classList.add('no-webgl'))
